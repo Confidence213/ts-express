@@ -1,5 +1,5 @@
 import express from "express";
-import { default as User } from "../models/user.model";
+import { default as User, UserModel } from "../models/user.model";
 export const userRouter = express.Router();
 
 userRouter.get("/", (req, res) => {
@@ -16,14 +16,14 @@ userRouter.post("/signup", (req, res, next) => {
         password: req.body.password
     });
 
-    User.findOne({ email: req.body.email }, (err, existingUser) => {
+    User.findOne({ email: req.body.email } as any, (err, existingUser) => {
         if (err) {
             return next(err);
         }
         if (existingUser) {
             return res.redirect("/user/signup");
         }
-        user.save((e) => {
+        user.save((e: UserModel) => {
             if (e) {
                 return next(e);
             }

@@ -40,7 +40,7 @@ userSchema.pre<UserModel>("save", function save(next) {
     });
 });
 
-const comparePassword: comparePasswordFunction = function (candidatePassword, cb) {
+const comparePassword: comparePasswordFunction = function(candidatePassword, cb) {
     bcrypt.compare(candidatePassword, this.password, (err: mongoose.Error, isMatch: boolean) => {
         cb(err, isMatch);
     });
@@ -48,5 +48,5 @@ const comparePassword: comparePasswordFunction = function (candidatePassword, cb
 
 userSchema.methods.comparePassword = comparePassword;
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model<UserModel>("User", userSchema);
 export default User;
