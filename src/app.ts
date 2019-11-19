@@ -12,7 +12,7 @@ dotenv.config({ path: ".env" });
 const app: express.Application = express();
 
 const mongoUrl = MONGODB_URI;
-mongoose.connect(mongoUrl, { useCreateIndex: true, useNewUrlParser: true }, (err: any) => {
+mongoose.connect(mongoUrl, { useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology: true }, (err: any) => {
     if (err) {
         // tslint:disable-next-line:no-console
         console.log(err.message);
