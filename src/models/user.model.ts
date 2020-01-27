@@ -11,10 +11,12 @@ export type UserModel = mongoose.Document & {
         website: string
     },
 
-    comparePassword: comparePasswordFunction
+    comparePassword: comparePasswordFunction,
+    toUserJSON: toUserJSON
 };
 
 type comparePasswordFunction = (this: any, candidatePassword: string, cb: (err: any, isMatch: any) => {}) => void;
+type toUserJSON = (this: any) => any;
 
 const userSchema = new mongoose.Schema({
     email: { type: String, unique: true },
@@ -27,7 +29,7 @@ const userSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-userSchema.pre<UserModel>("save", function save(next) {
+userSchema.pre<UserModel>("save", function save (next) {
     const user = this;
     if (!user.isModified("password")) { return next(); }
     bcrypt.genSalt(10, (err, salt) => {
@@ -40,13 +42,24 @@ userSchema.pre<UserModel>("save", function save(next) {
     });
 });
 
-const comparePassword: comparePasswordFunction = function(candidatePassword, cb) {
+const comparePassword: comparePasswordFunction = function (candidatePassword, cb) {
     bcrypt.compare(candidatePassword, this.password, (err: mongoose.Error, isMatch: boolean) => {
         cb(err, isMatch);
     });
 };
 
 userSchema.methods.comparePassword = comparePassword;
+userSchema.methods.toUserJSON = function () {
+    return {
+        email: this.email,
+        profile: {
+            gender: this.profile.gender,
+            location: this.profile.location,
+            name: this.profile.name,
+            website: this.profile.website
+        },
+    };
+};
 
 const User = mongoose.model<UserModel>("User", userSchema);
 export default User;

@@ -13,7 +13,13 @@ userRouter.get("/signup", (req, res) => {
 userRouter.post("/signup", (req, res, next) => {
     const user = new User({
         email: req.body.email,
-        password: req.body.password
+        password: req.body.password,
+        profile: {
+            gender: req.body.gender,
+            location: req.body.location,
+            name: req.body.name,
+            website: req.body.website
+        },
     });
 
     User.findOne({ email: req.body.email } as any, (err, existingUser) => {
@@ -23,11 +29,23 @@ userRouter.post("/signup", (req, res, next) => {
         if (existingUser) {
             return res.redirect("/user/signup");
         }
-        user.save((e: UserModel) => {
+        user.save((e) => {
             if (e) {
                 return next(e);
             }
             res.status(200).send("User saved!");
         });
+    });
+});
+
+userRouter.get("/:id", (req, res, next) => {
+    User.findById(req.params.id, (e, user) => {
+        if (e) {
+            return next(e);
+        }
+        if (!user) {
+            return res.sendStatus(404);
+        }
+        return res.json(user.toUserJSON());
     });
 });
