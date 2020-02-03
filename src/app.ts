@@ -3,6 +3,7 @@ import express from "express";
 import mongoose from "mongoose";
 import middleware from "./middleware";
 
+import { loginRouter } from "./routes/login.route";
 import { apiRouter, userRouter } from "./routes/router";
 import { applyMiddleware } from "./utils";
 import { MONGODB_URI } from "./utils/secrets";
@@ -36,5 +37,6 @@ app.post("/", (req, res) => {
 
 app.use("/api", apiRouter);
 app.use("/user", userRouter);
+app.use("/login", loginRouter);
 
 export default app;
