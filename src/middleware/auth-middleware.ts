@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response, Router } from "express";
 import * as jwt from "jsonwebtoken";
+import { SECRET } from "../utils/secrets";
 
 export const checkToken = (req: Request, res: Response, next: NextFunction): any => {
   if (req.originalUrl === "/login") {
@@ -14,7 +15,7 @@ export const checkToken = (req: Request, res: Response, next: NextFunction): any
       token = token.slice(7, token.length);
     }
 
-    jwt.verify(token, "secret", (err: any, decoded: any) => {
+    jwt.verify(token, SECRET, (err: any, decoded: any) => {
       if (err) {
         return res.json({
           message: "Invalid token!",
