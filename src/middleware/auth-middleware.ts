@@ -27,7 +27,7 @@ export const checkToken = (req: Request, res: Response, next: NextFunction): any
       }
     });
   } else {
-    return res.json({
+    return res.status(403).json({
       message: "Missing authentication token!",
       success: false
     });
