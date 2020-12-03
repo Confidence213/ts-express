@@ -8,7 +8,7 @@
         "trailing-comma": [
             false
         ],
-        "space-before-function-paren": true,
+        "space-before-function-paren": [true, { "anonymous": "always" }],
         "quotemark": false
     },
     "rulesDirectory": []

@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
 
 export type UserModel = mongoose.Document & {
@@ -22,14 +22,16 @@ const userSchema = new mongoose.Schema({
     email: { type: String, unique: true },
     password: String,
     profile: {
-        gender: String,
-        location: String,
-        name: String,
-        website: String
+        type: {
+            gender: String,
+            location: String,
+            name: String,
+            website: String
+        }
     }
 }, { timestamps: true });
 
-userSchema.pre<UserModel>("save", function save (next) {
+userSchema.pre<UserModel>("save", function save(next) {
     const user = this;
     if (!user.isModified("password")) { return next(); }
     bcrypt.genSalt(10, (err, salt) => {
