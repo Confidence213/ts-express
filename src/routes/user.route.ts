@@ -22,7 +22,7 @@ userRouter.post("/signup", (req, res, next) => {
     },
   });
 
-  User.findOne({ email: req.body.email } as any, (err, existingUser) => {
+  User.findOne({ email: req.body.email } as any, (err: any, existingUser: any) => {
     if (err) {
       return next(err);
     }
@@ -39,7 +39,7 @@ userRouter.post("/signup", (req, res, next) => {
 });
 
 userRouter.get("/:id", (req, res, next) => {
-  User.findById(req.params.id, (e, user) => {
+  User.findById(req.params.id, (e: any, user: any) => {
     if (e) {
       return next(e);
     }
