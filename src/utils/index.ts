@@ -1,9 +1,11 @@
-import { Router } from "express";
+import { Router } from 'express';
 
 type Wrapper = ((router: Router) => void);
 
-export const applyMiddleware = (middleware: Wrapper[], router: Router) => {
-    for (const f of middleware) {
-        f(router);
-    }
+const applyMiddleware = (middleware: Wrapper[], router: Router) => {
+  middleware.forEach((f: Wrapper) => {
+    f(router);
+  });
 };
+
+export default applyMiddleware;
