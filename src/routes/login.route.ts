@@ -1,15 +1,16 @@
-import express from "express";
-import jwt from "jsonwebtoken";
-import { SECRET } from "../utils/secrets";
-export const loginRouter = express.Router();
+import express from 'express';
+import jwt from 'jsonwebtoken';
+import { SECRET } from '../utils/secrets';
 
-loginRouter.post("/", (request, response) => {
-  const username = request.body.username;
-  const password = request.body.password;
+const loginRouter = express.Router();
+
+loginRouter.post('/', (request, response) => {
+  const { username } = request.body;
+  const { password } = request.body;
 
   const mock = {
     password: 'password',
-    username: 'admin'
+    username: 'admin',
   };
 
   if (username && password) {
@@ -17,21 +18,23 @@ loginRouter.post("/", (request, response) => {
       const token = jwt.sign(
         { username },
         SECRET,
-        { expiresIn: '24h' }
+        { expiresIn: '24h' },
       );
 
       response.json({
         token,
-        username
+        username,
       });
     } else {
       response.status(403).send({
-        message: 'Incorrect username or password'
+        message: 'Incorrect username or password',
       });
     }
   } else {
     response.status(400).send({
-      message: 'Authentication failed! Please check the request'
+      message: 'Authentication failed! Please check the request',
     });
   }
 });
+
+export default loginRouter;

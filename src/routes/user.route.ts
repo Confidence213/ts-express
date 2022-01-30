@@ -1,16 +1,17 @@
-import express from "express";
-import { default as User } from "../models/user.model";
-export const userRouter = express.Router();
+import express from 'express';
+import User from '../models/user.model';
 
-userRouter.get("/", (req, res) => {
-  res.send("User route works!");
+const userRouter = express.Router();
+
+userRouter.get('/', (req, res) => {
+  res.send('User route works!');
 });
 
-userRouter.get("/signup", (req, res) => {
-  res.send("Signup route works");
+userRouter.get('/signup', (req, res) => {
+  res.send('Signup route works');
 });
 
-userRouter.post("/signup", (req, res, next) => {
+userRouter.post('/signup', (req, res, next) => {
   const user = new User({
     email: req.body.email,
     password: req.body.password,
@@ -18,7 +19,7 @@ userRouter.post("/signup", (req, res, next) => {
       gender: req.body.gender,
       location: req.body.location,
       name: req.body.name,
-      website: req.body.website
+      website: req.body.website,
     },
   });
 
@@ -27,18 +28,18 @@ userRouter.post("/signup", (req, res, next) => {
       return next(err);
     }
     if (existingUser) {
-      return res.redirect("/user/signup");
+      return res.redirect('/user/signup');
     }
     user.save((e) => {
       if (e) {
         return next(e);
       }
-      res.status(200).send("User saved!");
+      res.status(200).send('User saved!');
     });
   });
 });
 
-userRouter.get("/:id", (req, res, next) => {
+userRouter.get('/:id', (req, res, next) => {
   User.findById(req.params.id, (e: any, user: any) => {
     if (e) {
       return next(e);
@@ -49,3 +50,5 @@ userRouter.get("/:id", (req, res, next) => {
     return res.json(user.toUserJSON());
   });
 });
+
+export default userRouter;
