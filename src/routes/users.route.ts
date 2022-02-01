@@ -1,17 +1,32 @@
 import express from 'express';
 import User from '../models/user.model';
 
-const userRouter = express.Router();
+const usersRouter = express.Router();
 
-userRouter.get('/', (req, res) => {
-  res.send('User route works!');
+usersRouter.get('/', (req, res, next) => {
+  User.find({}, (e, users) => {
+    if (e) {
+      return next(e);
+    }
+    if (!users) {
+      return res.sendStatus(404);
+    }
+
+    const userMap: any = [];
+
+    users.forEach((user) => {
+      userMap.push(user.toUserJSON());
+    });
+
+    res.json(userMap);
+  });
 });
 
-userRouter.get('/signup', (req, res) => {
+usersRouter.get('/signup', (req, res) => {
   res.send('Signup route works');
 });
 
-userRouter.post('/signup', (req, res, next) => {
+usersRouter.post('/signup', (req, res, next) => {
   const user = new User({
     email: req.body.email,
     password: req.body.password,
@@ -39,7 +54,7 @@ userRouter.post('/signup', (req, res, next) => {
   });
 });
 
-userRouter.get('/:id', (req, res, next) => {
+usersRouter.get('/:id', (req, res, next) => {
   User.findById(req.params.id, (e: any, user: any) => {
     if (e) {
       return next(e);
@@ -51,4 +66,4 @@ userRouter.get('/:id', (req, res, next) => {
   });
 });
 
-export default userRouter;
+export default usersRouter;
