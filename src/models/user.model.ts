@@ -53,6 +53,7 @@ const comparePassword: comparePasswordFunction = function comparePassword(candid
 userSchema.methods.comparePassword = comparePassword;
 userSchema.methods.toUserJSON = function f() {
   return {
+    id: this._id,
     email: this.email,
     profile: {
       gender: this.profile.gender,

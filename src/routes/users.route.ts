@@ -43,13 +43,17 @@ usersRouter.post('/signup', (req, res, next) => {
       return next(err);
     }
     if (existingUser) {
-      return res.redirect('/user/signup');
+      return res.json({
+        success: false,
+        message: 'An user with the email address already exists!',
+        result: null,
+      });
     }
-    user.save((e) => {
+    user.save((e, addedUser) => {
       if (e) {
         return next(e);
       }
-      res.status(200).send('User saved!');
+      res.json({ success: true, message: 'User saved successfully!', result: addedUser.toUserJSON() });
     });
   });
 });
