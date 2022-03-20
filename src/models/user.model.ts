@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import mongoose from 'mongoose';
 
-type comparePasswordFunction = (this: any, candidatePassword: string, cb: (err: any, isMatch: any) => {}) => void;
+type comparePasswordFunction = (this: any, candidatePassword: string, cb: (err: any, isMatch: boolean) => void) => void;
 type toUserJSON = (this: any) => any;
 
 export type UserModel = mongoose.Document & {
