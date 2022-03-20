@@ -1,4 +1,3 @@
-import dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
 import middleware from './middleware';
@@ -9,7 +8,6 @@ import applyMiddleware from './utils';
 import { MONGODB_URI } from './utils/secrets';
 
 // Create a new express application instance
-dotenv.config({ path: '.env' });
 const app: express.Application = express();
 
 const mongoUrl = MONGODB_URI;

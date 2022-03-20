@@ -1,37 +1,58 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
 import { SECRET } from '../utils/secrets';
+import User, { UserModel } from '../models/user.model';
 
 const loginRouter = express.Router();
 
-loginRouter.post('/', (request, response) => {
-  const { username } = request.body;
-  const { password } = request.body;
+loginRouter.post('/', (request, response, next) => {
+  const { email, password }: { email: string, password: string } = request.body;
 
-  const mock = {
-    password: 'password',
-    username: 'admin',
-  };
+  if (email && password) {
+    User.findOne({ email }, (err: any, existingUser: UserModel) => {
+      if (err) {
+        return next(err);
+      }
 
-  if (username && password) {
-    if (username === mock.username && password === mock.password) {
-      const token = jwt.sign(
-        { username },
-        SECRET,
-        { expiresIn: '24h' },
-      );
+      if (existingUser) {
+        existingUser.comparePassword(password, (error: any, isMatch: boolean) => {
+          if (error) {
+            return next(error);
+          }
 
-      response.json({
-        token,
-        username,
-      });
-    } else {
-      response.status(403).send({
-        message: 'Incorrect username or password',
-      });
-    }
+          if (isMatch) {
+            const token = jwt.sign(
+              { email },
+              SECRET,
+              { expiresIn: '24h' },
+            );
+
+            response.json({
+              success: true,
+              message: 'Logged in successfully!',
+              result: {
+                token,
+                userId: existingUser.id,
+                email: existingUser.email,
+              },
+            });
+          } else {
+            response.status(403).send({
+              success: false,
+              message: 'Incorrect username or password',
+            });
+          }
+        });
+      } else {
+        response.status(403).send({
+          success: false,
+          message: 'Incorrect username or password',
+        });
+      }
+    });
   } else {
     response.status(400).send({
+      success: false,
       message: 'Authentication failed! Please check the request',
     });
   }
