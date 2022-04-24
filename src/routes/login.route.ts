@@ -22,7 +22,11 @@ loginRouter.post('/', (request, response, next) => {
 
           if (isMatch) {
             const token = jwt.sign(
-              { email },
+              {
+                email,
+                userId: existingUser.id,
+                name: existingUser.profile.name,
+              },
               SECRET,
               { expiresIn: '24h' },
             );
@@ -30,11 +34,7 @@ loginRouter.post('/', (request, response, next) => {
             response.json({
               success: true,
               message: 'Logged in successfully!',
-              result: {
-                token,
-                userId: existingUser.id,
-                email: existingUser.email,
-              },
+              result: { token },
             });
           } else {
             response.status(403).send({
